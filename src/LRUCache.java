@@ -44,7 +44,17 @@ public class LRUCache<T, U> implements Cache<T, U> {
      * @param key the key
      * @return the value associated with the key
      */
+    private String getListAsString(){
+        String s="";
+        Node currentNode=_firstNode;
+        while(currentNode!=null){
+            s+=currentNode._key+ " ";
+            currentNode=currentNode._nextInList;
+        }
+        return s;
+    }
     public U get(T key){
+
         if(_map.get(key)==null){
             U addedObject=_provider.get(key);
             Node addedNode=new Node(key,addedObject,null,null);
@@ -54,13 +64,16 @@ public class LRUCache<T, U> implements Cache<T, U> {
                 _map.put(key,addedNode);
             }
             else if(_numElements<_capacity){
+               // System.out.println(getListAsString());
                 addedNode._previousInList=_lastNode;
                 _lastNode._nextInList=addedNode;
                 _lastNode=addedNode;
                 _map.put(key,addedNode);
             }
            else {
+               // System.out.println(getListAsString());
                 _map.remove(_firstNode._key);
+                _map.put(key,addedNode);
                 addedNode._previousInList=_lastNode;
                 _firstNode=_firstNode._nextInList;
                 _lastNode._nextInList=addedNode;
@@ -73,13 +86,17 @@ public class LRUCache<T, U> implements Cache<T, U> {
             return addedObject;
         }
         else{
+            //System.out.println(getListAsString());
             U addedObject=_map.get(key)._content;
             Node newNode=new Node(key,addedObject,null,null);
             if(_numElements==1){
-                return _map.get(key)._content;
+
             }
             else if(_map.get(key).equals(_firstNode)){
                 _map.remove(_firstNode);
+                _map.put(key,newNode);
+                _firstNode._nextInList._previousInList=null;
+                _firstNode=_firstNode._nextInList;
                 newNode._previousInList=_lastNode;
                 _lastNode._nextInList=newNode;
                 _lastNode=newNode;
@@ -89,9 +106,11 @@ public class LRUCache<T, U> implements Cache<T, U> {
 
             }
             else{
+                //System.out.println("The node we are checking is "+_map.get(key)._previousInList);
                 _map.get(key)._previousInList._nextInList=_map.get(key)._nextInList;
                 _map.get(key)._nextInList._previousInList=_map.get(key)._previousInList;
-                _map.remove(_map.get(key));
+                _map.remove(key);
+                _map.put(key,newNode);
                 _lastNode._nextInList=newNode;
                 newNode._previousInList=_lastNode;
                 _lastNode=newNode;

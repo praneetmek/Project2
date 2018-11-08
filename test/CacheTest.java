@@ -129,5 +129,28 @@ public class CacheTest {
 		assertEquals(6, cacheWithFour.getNumMisses());
 
 	}
+	@Test
+	public void repeatedGetsMovedFromFirst(){
+		cacheWithThree.get(1);
+		cacheWithThree.get(2);
+		cacheWithThree.get(3);
+		cacheWithThree.get(1);
+		cacheWithThree.get(4);
+		cacheWithThree.get(1);
+		assertEquals(4, cacheWithThree.getNumMisses());
+
+	}
+	@Test
+	public void repeatedGetsMovedFromMiddle(){
+		cacheWithThree.get(1);
+		cacheWithThree.get(2);
+		cacheWithThree.get(3);
+		cacheWithThree.get(2);
+		cacheWithThree.get(4);
+		cacheWithThree.get(1);
+		cacheWithThree.get(3);
+		assertEquals(6, cacheWithThree.getNumMisses());
+
+	}
 
 }
