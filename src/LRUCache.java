@@ -9,6 +9,7 @@ import java.util.HashMap;
 public class LRUCache<T, U> implements Cache<T, U> {
     class Node{
         U _content;
+
         Node _nextInList,_previousInList;
         T _key;
         private Node(T key, U content, Node nextInList, Node previousInList){
@@ -29,6 +30,9 @@ public class LRUCache<T, U> implements Cache<T, U> {
      * @param capacity the exact number of (key,value) pairs to store in the cache
      */
     public LRUCache (DataProvider<T, U> provider, int capacity) {
+        if(capacity<1){
+            throw new IllegalArgumentException("You cant have a capacity of less than 1!");
+        }
         _provider=provider;
         _capacity=capacity;
         _numElements=0;
